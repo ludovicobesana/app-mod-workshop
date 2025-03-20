@@ -23,3 +23,5 @@ To configure the project:
 
 * update `config.php` to reflect the parameters that will be used to connect to the MySQL db;
 * make `/uploads` directory writable.
+
+Test
