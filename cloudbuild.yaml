@@ -1,0 +1,32 @@
+steps:
+  # Step 1: Build Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'europe-west8-docker.pkg.dev/$PROJECT_ID/php-app-repo/my-php-app-docker'
+      - '.'
+
+  # Step 2: Push Docker image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'europe-west8-docker.pkg.dev/$PROJECT_ID/php-app-repo/my-php-app-docker'
+
+  # Step 3: Deploy to Cloud Run
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'php-amarcord'
+      - '--image=europe-west8-docker.pkg.dev/$PROJECT_ID/php-app-repo/my-php-app-docker'
+      - '--region=europe-west8'
+      - '--platform=managed'
+      - '--allow-unauthenticated'
+      - '--port=8080'
+      - '--set-env-vars=DB_HOST=your-db-host,DB_USER=your-db-user,DB_PASS=your-db-pass'
+
+timeout: 1200s
+
+images:
+  - 'europe-west8-docker.pkg.dev/$PROJECT_ID/php-app-repo/my-php-app-docker'
